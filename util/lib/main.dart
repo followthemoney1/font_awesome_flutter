@@ -102,11 +102,8 @@ void main(List<String> rawArgs) async {
     print(blue('No icons.json found, updating free icons'));
     const repositoryName = 'FortAwesome/Font-Awesome';
     final defaultBranch = await getRepositoryDefaultBranch(repositoryName);
-    print(blue(
-        'Choosing branch "$defaultBranch" of repository https://github.com/' +
-            repositoryName));
-    await download(
-        'https://raw.githubusercontent.com/FortAwesome/Font-Awesome/$defaultBranch/metadata/icons.json',
+    print(blue('Choosing branch "$defaultBranch" of repository https://github.com/' + repositoryName));
+    await download('https://raw.githubusercontent.com/FortAwesome/Font-Awesome/$defaultBranch/metadata/icons.json',
         File('lib/fonts/icons.json'));
     await download(
         'https://raw.githubusercontent.com/FortAwesome/Font-Awesome/$defaultBranch/webfonts/fa-brands-400.ttf',
@@ -126,14 +123,12 @@ void main(List<String> rawArgs) async {
   final List<IconMetadata> metadata = [];
   final Set<String> styles = {};
   // duotone icons are no longer supported
-  final List<String> excludedStyles = ['duotone', ...args['exclude']];
-  var hasDuotoneIcons = readAndPickMetadata(
-      iconsJson, metadata, styles, versions, excludedStyles);
+  // final List<String> excludedStyles = ['duotone', ...args['exclude']];
+  var hasDuotoneIcons = readAndPickMetadata(iconsJson, metadata, styles, versions, args['exclude']);
   if (hasDuotoneIcons) {
     // Duotone are no longer supported - temporarily added notice to avoid
     // confusion
-    print(red(
-        'Duotone icons are no longer supported. Automatically disabled them.'));
+    print(red('Duotone icons are no longer supported. Automatically disabled them.'));
   }
   hasDuotoneIcons = false;
 
@@ -213,9 +208,7 @@ void adjustPubspecFontIncludes(Set<String> styles) {
   pubspecFile.writeAsStringSync(pubspec.join('\n'));
 
   print(blue('\nFound and enabled the following icon styles:'));
-  enabledStyles.isEmpty
-      ? print(red("None"))
-      : print(blue(enabledStyles.join(', ')));
+  enabledStyles.isEmpty ? print(red("None")) : print(blue(enabledStyles.join(', ')));
 
   print(blue('\nRunning "flutter pub get"'));
   final result = Process.runSync('flutter', ['pub', 'get'], runInShell: true);
@@ -327,8 +320,7 @@ to complete successfully.
 }
 
 /// Builds the class with icon definitions and returns the output
-List<String> generateIconDefinitionClass(
-    List<IconMetadata> metadata, Version version) {
+List<String> generateIconDefinitionClass(List<IconMetadata> metadata, Version version) {
   final List<String> output = [
     'library font_awesome_flutter;',
     '',
@@ -476,12 +468,9 @@ Future printVersionNotice(String repositoryName) async {
   try {
     final packageVersion = pub.Version.parse(getPackageVersion());
 
-    print(blue(
-        'Using font_awesome_flutter version ' + packageVersion.toString()));
+    print(blue('Using font_awesome_flutter version ' + packageVersion.toString()));
 
-    await download(
-        'https://api.github.com/repos/' + repositoryName + '/releases',
-        tmpFile);
+    await download('https://api.github.com/repos/' + repositoryName + '/releases', tmpFile);
 
     String rawReleasesData = await tmpFile.readAsString();
     List releasesData = json.decode(rawReleasesData);
@@ -491,12 +480,7 @@ Future printVersionNotice(String repositoryName) async {
       var releaseName = release["name"] as String;
       releaseName = releaseName.isEmpty ? release["tag_name"] : releaseName;
       // remove possible prefixes
-      releaseName = releaseName
-          .toLowerCase()
-          .replaceAll('version', '')
-          .replaceAll('v.', '')
-          .replaceAll('v', '')
-          .trim();
+      releaseName = releaseName.toLowerCase().replaceAll('version', '').replaceAll('v.', '').replaceAll('v', '').trim();
       final version = pub.Version.parse(releaseName);
       if (version.isPreRelease) {
         preReleases.add(version);
@@ -515,8 +499,7 @@ Future printVersionNotice(String repositoryName) async {
           repositoryName +
           ')'));
     }
-    if (primaryPreRelease > packageVersion &&
-        primaryPreRelease > primaryRelease) {
+    if (primaryPreRelease > packageVersion && primaryPreRelease > primaryRelease) {
       print(yellow('A pre-release version (' +
           primaryPreRelease.toString() +
           ') of font_awesome_flutter is available. Should you encounter any problems, have a look if it fixes them.'));
@@ -539,8 +522,8 @@ Future printVersionNotice(String repositoryName) async {
 /// latest font awesome version.
 /// [excludedStyles], which can be set in the program arguments, are removed.
 /// Returns whether the dataset contains duotone icons.
-bool readAndPickMetadata(File iconsJson, List<IconMetadata> metadata,
-    Set<String> styles, List<String> versions, List<String> excludedStyles) {
+bool readAndPickMetadata(File iconsJson, List<IconMetadata> metadata, Set<String> styles, List<String> versions,
+    List<String> excludedStyles) {
   var hasDuotoneIcons = false;
 
   dynamic rawMetadata;
@@ -548,8 +531,7 @@ bool readAndPickMetadata(File iconsJson, List<IconMetadata> metadata,
     final content = iconsJson.readAsStringSync();
     rawMetadata = json.decode(content);
   } catch (_) {
-    print(
-        'Error: Invalid icons.json. Please make sure you copied the correct file.');
+    print('Error: Invalid icons.json. Please make sure you copied the correct file.');
     exit(1);
   }
 
@@ -626,10 +608,7 @@ ArgParser setUpArgParser() {
   final argParser = ArgParser();
 
   argParser.addFlag('help',
-      abbr: 'h',
-      defaultsTo: false,
-      negatable: false,
-      help: 'display program options and usage information');
+      abbr: 'h', defaultsTo: false, negatable: false, help: 'display program options and usage information');
 
   argParser.addMultiOption('exclude',
       abbr: 'e',

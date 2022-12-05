@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:font_awesome_flutter_example/icons.dart';
+import 'package:font_awesome_flutter/src/fa_duotone.dart';
 
 void main() {
   runApp(const FontAwesomeGalleryApp());
@@ -15,12 +16,16 @@ class FontAwesomeGalleryApp extends StatelessWidget {
     return MaterialApp(
       title: 'Font Awesome Flutter Gallery',
       theme: ThemeData.light().copyWith(
-        iconTheme: const IconThemeData(size: 36.0, color: Colors.black87),
-        textTheme: const TextTheme(
-          bodyText2: TextStyle(fontSize: 16.0, color: Colors.black87),
-        ),
+          // iconTheme: const IconThemeData(size: 36.0, color: Colors.blueAccent),
+          // textTheme: const TextTheme(
+          //   bodyText2: TextStyle(fontSize: 16.0, color: Colors.red),
+          // ),
+          ),
+      home: Column(
+        children: [
+          Expanded(child: FontAwesomeGalleryHome()),
+        ],
       ),
-      home: const FontAwesomeGalleryHome(),
     );
   }
 }
@@ -39,9 +44,7 @@ class FontAwesomeGalleryHomeState extends State<FontAwesomeGalleryHome> {
   @override
   Widget build(BuildContext context) {
     final filteredIcons = icons
-        .where((icon) =>
-            _searchTerm.isEmpty ||
-            icon.title.toLowerCase().contains(_searchTerm.toLowerCase()))
+        .where((icon) => _searchTerm.isEmpty || icon.title.toLowerCase().contains(_searchTerm.toLowerCase()))
         .toList();
 
     return Scaffold(
@@ -71,10 +74,26 @@ class FontAwesomeGalleryHomeState extends State<FontAwesomeGalleryHome> {
                           alignment: Alignment.center,
                           child: Hero(
                             tag: icon,
-                            child: FaIcon(
-                              icon.iconData,
+                            child: FaDuotoneIcon(
+                              IconDataDuotone(
+                                0xf5c2,
+                                secondary: IconDataDuotone(0x10f5c2),
+                              ),
                               size: 100,
+                              primaryColor: Colors.red,
+                              secondaryColor: Colors.redAccent.withOpacity(0.3),
                             ),
+
+                            // IconDataDuotone(
+                            //   0xe398,
+                            //   secondary: IconDataDuotone(
+                            //     0xe398,
+                            //   ),
+                            // ),
+                            //   FaIcon(
+                            // icon.iconData,
+                            // size: 100,
+                            // ),
                           ),
                         ),
                       );
